@@ -28,23 +28,51 @@
                 <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                     <div data-mdb-input-init class="form-outline flex-fill mb-0">
-                        <input type="text" id="form3Example1c" class="form-control" />
-                        <label class="form-label" for="form3Example1c">Your Name</label>
+                        <input type="text" id="first_name" name="first_name" class="form-control" placeholder="Ivan" />
+                        <label class="form-label" for="form3Example1c">Your Fisrt Name</label>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                    <div data-mdb-input-init class="form-outline flex-fill mb-0">
+                        <input type="text" id="second_name" name="second_name" class="form-control"
+                            placeholder="Ivanov" />
+                        <label class="form-label" for="form3Example1c">Your Second Name</label>
                     </div>
                 </div>
 
                 <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                     <div data-mdb-input-init class="form-outline flex-fill mb-0">
-                        <input type="email" id="form3Example3c" class="form-control" />
+                        <input type="email" id="email" name="email" class="form-control"
+                            placeholder="your_email@mail.ru" />
                         <label class="form-label" for="form3Example3c">Your Email</label>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                    <div data-mdb-input-init class="form-outline flex-fill mb-0">
+                        <input type="email" id="address" name="address" class="form-control"
+                            placeholder="Pushkin Street, 7" />
+                        <label class="form-label" for="form3Example3c">Your Address</label>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                    <div data-mdb-input-init class="form-outline mb-3" style="width: 100%; max-width: 22rem">
+                        <input type="text" id="phone" name="phone" class="form-control"
+                            placeholder="8 (123) 456 78-90" />
+                        <label class="form-label" for="form3Example3c">Your Phone</label>
                     </div>
                 </div>
 
                 <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                     <div data-mdb-input-init class="form-outline flex-fill mb-0">
-                        <input type="password" id="form3Example4c" class="form-control" />
+                        <input type="password" id="password" name="password" class="form-control" />
                         <label class="form-label" for="form3Example4c">Password</label>
                     </div>
                 </div>
@@ -57,17 +85,16 @@
                 </div>
 
                 <div style='justify-content:space-around;' class="d-flex mx-4 mb-3 mb-lg-4">
-                    <button type="button" data-mdb-button-init data-mdb-ripple-init
-                        class="btn btn-primary btn-lg">Register</button>
+                    <inpit style="background-color: #f39842; width:auto; height: auto" type="submit" value="Register">
                 </div>
 
             </form>
+            {%block login%}
             <form style="width:300px; margin-top:100px;" class="mx-1 mx-md-4">
-
                 <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                     <div data-mdb-input-init class="form-outline flex-fill mb-0">
-                        <input type="email" id="form3Example3c" class="form-control" />
+                        <input type="email" id="email_login" name="email_login" class="form-control" />
                         <label class="form-label" for="form3Example3c">Your Email</label>
                     </div>
                 </div>
@@ -75,15 +102,18 @@
                 <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                     <div data-mdb-input-init class="form-outline flex-fill mb-0">
-                        <input type="password" id="form3Example4c" class="form-control" />
+                        <input type="password" id="password_login" name="password_login" class="form-control" />
                         <label class="form-label" for="form3Example4c">Password</label>
                     </div>
                 </div>
 
                 <div style='justify-content:space-around;' class="d-flex mx-4 mb-3 mb-lg-4">
-                    <button type="button" data-mdb-button-init data-mdb-ripple-init
-                        class="btn btn-primary btn-lg">Login</button>
+                    <input type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg">Login
                 </div>
+            </form>
+            {{email}}
+            {{password}}
+            {% endblock %}
 
         </div>
     </div>

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, status, HTTPException, Depends, Request
+from fastapi import FastAPI, Form, status, HTTPException, Depends, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from models import *
@@ -52,7 +52,7 @@ async def get_a_food(request: Request, food_id: int):
         context = {
             'id': result.id,
             'title': result.title,
-            'price': result.price,
+            'price': result.price
         }
     )
 
@@ -79,6 +79,7 @@ async def delete_a_food(food_id: int):
                             detail='Resourse Not Found')
     
     session.delete(result)
+    session.commit()
 
     return result
     
@@ -86,6 +87,49 @@ async def delete_a_food(food_id: int):
 async def get_login_page(request: Request):
     return templates.TemplateResponse('login.html', {'request': request})
 
+
 @app.get('/')
 async def get_index_page(request: Request):
     return templates.TemplateResponse('index.html', {'request': request})
+
+@app.post('/login', response_model=Customer, status_code=status.HTTP_201_CREATED)
+async def create_a_customer(cust: Annotated[Customer, Depends()]):
+    new_cust = Customer(id=cust.id, first_name=cust.first_name, second_name=cust.second_name,
+                        phone=cust.phone, email=cust.email, password=cust.password, address=cust.address)
+
+    session.add(new_cust)
+    session.commit()
+    
+    return new_cust
+
+@app.get('/profile/{cust_id}', response_model=Customer)
+async def get_a_cust(request: Request, cust_id: int):
+    statement = select(Customer).where(Customer.id == cust_id)
+    result = session.exec(statement).first()
+
+    if result == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    
+    return templates.TemplateResponse(
+        request = request,
+        name = 'cust_card.html',
+        context = {
+            'id': result.id,
+            'first_name': result.first_name,
+            'second_name': result.second_name,
+            'phone': result.phone,
+            'email': result.email,
+            'address': result.address
+        }
+    )
+    
+@app.post('/login', response_model=Customer)
+async def get_cust(request: Request, email: str = Form(...), password: str = Form(...)):
+    return templates.TemplateResponse(
+        request = request,
+        name = 'login.html',
+        context = {
+            'email': email,
+            'password': password
+        }
+    )

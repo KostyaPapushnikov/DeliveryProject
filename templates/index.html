@@ -21,14 +21,22 @@
                 <a href="{{ url_for('get_login_page') }}">Profile</a>
             </div>
         </div>
+        <br>
         {%block body%}
-        {%for i in result%}
-        <ul class="list-group">
-            <li class="list-group-item">id: {{i.id}}</li>
-            <li class="list-group-item">title: {{i.title}}</li>
-            <li class="list-group-item">price: {{i.price}}</li>
-        </ul>
-        {% endfor %}
+        <div class="row row-cols-2">
+            {%for i in result%}
+            <a style="text-decoration: none;" href="/food/{{i.id}}">
+                <div class="col">
+                    <ul class="list-group">
+                        <li class="list-group-item">id: {{i.id}}</li>
+                        <li class="list-group-item">title: {{i.title}}</li>
+                        <li class="list-group-item">price: {{i.price}}</li>
+                    </ul>
+                    <br>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
         {% endblock %}
 
 
