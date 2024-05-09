@@ -15,7 +15,7 @@
         justify-content: space-between; align-items: center;
         padding: 25px;' class="header">
             <div class="left">
-                <a href="{{ url_for('get_index_page') }}">Home</a>
+                <a href="{{ url_for('get_all_food') }}">Home</a>
             </div>
             <div class="right">
                 <a href="{{ url_for('get_login_page') }}">Profile</a>
@@ -23,74 +23,7 @@
         </div>
         <div style='display: flex;
         justify-content: space-around; align-items: center;'>
-            <form style="width:300px; margin-top:100px;" class="mx-1 mx-md-4">
-
-                <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
-                    <div data-mdb-input-init class="form-outline flex-fill mb-0">
-                        <input type="text" id="first_name" name="first_name" class="form-control" placeholder="Ivan" />
-                        <label class="form-label" for="form3Example1c">Your Fisrt Name</label>
-                    </div>
-                </div>
-
-                <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
-                    <div data-mdb-input-init class="form-outline flex-fill mb-0">
-                        <input type="text" id="second_name" name="second_name" class="form-control"
-                            placeholder="Ivanov" />
-                        <label class="form-label" for="form3Example1c">Your Second Name</label>
-                    </div>
-                </div>
-
-                <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
-                    <div data-mdb-input-init class="form-outline flex-fill mb-0">
-                        <input type="email" id="email" name="email" class="form-control"
-                            placeholder="your_email@mail.ru" />
-                        <label class="form-label" for="form3Example3c">Your Email</label>
-                    </div>
-                </div>
-
-                <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
-                    <div data-mdb-input-init class="form-outline flex-fill mb-0">
-                        <input type="email" id="address" name="address" class="form-control"
-                            placeholder="Pushkin Street, 7" />
-                        <label class="form-label" for="form3Example3c">Your Address</label>
-                    </div>
-                </div>
-
-                <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
-                    <div data-mdb-input-init class="form-outline mb-3" style="width: 100%; max-width: 22rem">
-                        <input type="text" id="phone" name="phone" class="form-control"
-                            placeholder="8 (123) 456 78-90" />
-                        <label class="form-label" for="form3Example3c">Your Phone</label>
-                    </div>
-                </div>
-
-                <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
-                    <div data-mdb-input-init class="form-outline flex-fill mb-0">
-                        <input type="password" id="password" name="password" class="form-control" />
-                        <label class="form-label" for="form3Example4c">Password</label>
-                    </div>
-                </div>
-
-                <div class="form-check d-flex justify-content-center mb-5">
-                    <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3c" />
-                    <label class="form-check-label" for="form2Example3">
-                        I agree all statements in <a href="#!">Terms of service</a>
-                    </label>
-                </div>
-
-                <div style='justify-content:space-around;' class="d-flex mx-4 mb-3 mb-lg-4">
-                    <inpit style="background-color: #f39842; width:auto; height: auto" type="submit" value="Register">
-                </div>
-
-            </form>
-            {%block login%}
-            <form style="width:300px; margin-top:100px;" class="mx-1 mx-md-4">
+            <form style="width:300px; margin-top:100px;" class="mx-1 mx-md-4" method="post">
                 <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                     <div data-mdb-input-init class="form-outline flex-fill mb-0">
@@ -108,12 +41,15 @@
                 </div>
 
                 <div style='justify-content:space-around;' class="d-flex mx-4 mb-3 mb-lg-4">
-                    <input type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg">Login
+
+                    <input type='submit' data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg"
+                        value="Login">
+                </div>
+                <div style='justify-content:space-around;' class="d-flex mx-4 mb-3 mb-lg-4">
+
+                    <a style="text-decoration: none;" href="{{ url_for('get_registration_page') }}">Registration</a>
                 </div>
             </form>
-            {{email}}
-            {{password}}
-            {% endblock %}
 
         </div>
     </div>
