@@ -85,6 +85,10 @@ async def get_profile(request: Request, cust_id: int):
         }
     )
 
+@app.get('/cart', tags=['Pages'])
+async def get_cart_page(request: Request):
+    return templates.TemplateResponse(request=request, name='cart.html')
+
 
 
 
@@ -126,13 +130,14 @@ async def delete_a_food(food_id: int):
 
 
 
-@app.post('/registration', status_code=status.HTTP_201_CREATED, response_class=RedirectResponse, tags=['Auth'])
+@app.post('/registration', status_code=status.HTTP_201_CREATED, response_class=RedirectResponse, tags=['Account'])
 async def create_a_customer(first_name: str = Form(...), 
                             second_name: str = Form(...), 
                             email: str = Form(...), 
                             address: str = Form(...),
                             phone: int = Form(...),
-                            password: str = Form(...)) -> RedirectResponse:
+                            password: str = Form(...),
+                            remember: Optional[bool] = Form(default=False)) -> RedirectResponse:
     
     statement = select(Customer).where(Customer.email == email or Customer.phone == phone)
     result = session.exec(statement).one_or_none()
@@ -145,12 +150,13 @@ async def create_a_customer(first_name: str = Form(...),
         session.commit()
         
         response = RedirectResponse('/profile/'+str(new_cust.id), status_code=302)
-        response.set_cookie(key="id", value=str(new_cust.id))
+        if remember == True:
+            response.set_cookie(key="id", value=str(new_cust.id), max_age=15695000)
         return response
 
     return RedirectResponse('/registration', status_code=302)
 
-@app.post('/login', response_class=RedirectResponse, tags=['Auth'])
+@app.post('/login', response_class=RedirectResponse, tags=['Account'])
 async def get_cust(email_login: str = Form(...), password_login: str = Form(...),
                    remember: Optional[bool] = Form(default=False)) -> RedirectResponse:
     email_statement = select(Customer).where(Customer.email == email_login)
@@ -164,10 +170,10 @@ async def get_cust(email_login: str = Form(...), password_login: str = Form(...)
         if email_result.id == password_result.id:
             response = RedirectResponse('/profile/'+str(email_result.id), status_code=302)
             if remember == True:
-                response.set_cookie(key="id", value=str(email_result.id))
+                response.set_cookie(key="id", value=str(email_result.id), max_age=15695000)
             return response
 
-@app.delete('/profile/{cust_id}', status_code=status.HTTP_204_NO_CONTENT)
+@app.delete('/profile/{cust_id}', status_code=status.HTTP_204_NO_CONTENT, tags=['Account'])
 async def delete_a_cust(cust_id: int):
     statement = select(Customer).where(Customer.id == cust_id)
     result = session.exec(statement).one_or_none()
@@ -181,10 +187,8 @@ async def delete_a_cust(cust_id: int):
 
     return result
 
-@app.get('/profile')
+@app.get('/profile', tags=['Account'])
 async def switch_account(response: Response):
     response = RedirectResponse('/login', status_code=302)
     response.delete_cookie('id')
     return response
-    
-
