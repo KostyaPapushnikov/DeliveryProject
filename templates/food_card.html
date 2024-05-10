@@ -15,10 +15,11 @@
         justify-content: space-between; align-items: center;
         padding: 25px;' class="header">
             <div class="left">
-                <a href="{{ url_for('get_all_food') }}">Home</a>
+                <a style="text-decoration: none;" href="{{ url_for('get_all_food') }}">Home</a>
             </div>
             <div class="right">
-                <a href="{{ url_for('get_login_page') }}">Profile</a>
+                <a style="text-decoration: none;" href="{{ url_for('get_registration_page') }}">Sing Up</a>
+                <a style="text-decoration: none;" href="{{ url_for('get_login_page') }}">Profile</a>
             </div>
         </div>
         <br>

@@ -15,10 +15,10 @@
         justify-content: space-between; align-items: center;
         padding: 25px;' class="header">
             <div class="left">
-                <a href="{{ url_for('get_all_food') }}">Home</a>
+                <a style="text-decoration: none;" href="{{ url_for('get_all_food') }}">Home</a>
             </div>
             <div class="right">
-                <a href="{{ url_for('get_login_page') }}">Profile</a>
+                <a style="text-decoration: none;" href="{{ url_for('get_login_page') }}">Profile</a>
             </div>
         </div>
         <div style='display: flex;
@@ -38,6 +38,13 @@
                         <input type="password" id="password_login" name="password_login" class="form-control" />
                         <label class="form-label" for="form3Example4c">Password</label>
                     </div>
+                </div>
+
+                <div class="form-check d-flex justify-content-center mb-5">
+                    <input class="form-check-input me-2" name="remember" type="checkbox" id="form2Example3c" />
+                    <label class="form-check-label" for="form2Example3">
+                        Remember me
+                    </label>
                 </div>
 
                 <div style='justify-content:space-around;' class="d-flex mx-4 mb-3 mb-lg-4">
