@@ -1,5 +1,5 @@
 from typing import Optional
-from sqlmodel import SQLModel, Field, ForeignKey
+from sqlmodel import SQLModel, Field
 
 
 class Customer(SQLModel, table=True):
