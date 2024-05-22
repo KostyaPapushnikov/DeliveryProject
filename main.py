@@ -16,6 +16,7 @@ session = Session(bind=engine)
 
 
 
+
 @app.get('/', response_model=Food, tags=['Pages'])
 async def get_all_food(request: Request):
     statement = select(Food)
@@ -130,7 +131,8 @@ async def delete_a_food(food_id: int):
 
 
 
-@app.post('/registration', status_code=status.HTTP_201_CREATED, response_class=RedirectResponse, tags=['Account'])
+@app.post('/registration', status_code=status.HTTP_201_CREATED, 
+          response_class=RedirectResponse, tags=['Account'])
 async def create_a_customer(first_name: str = Form(...), 
                             second_name: str = Form(...), 
                             email: str = Form(...), 
@@ -157,7 +159,8 @@ async def create_a_customer(first_name: str = Form(...),
     return RedirectResponse('/registration', status_code=302)
 
 @app.post('/login', response_class=RedirectResponse, tags=['Account'])
-async def get_cust(email_login: str = Form(...), password_login: str = Form(...),
+async def get_cust(email_login: str = Form(...), 
+                   password_login: str = Form(...),
                    remember: Optional[bool] = Form(default=False)) -> RedirectResponse:
     email_statement = select(Customer).where(Customer.email == email_login)
     email_result = session.exec(email_statement).first()
@@ -173,7 +176,8 @@ async def get_cust(email_login: str = Form(...), password_login: str = Form(...)
                 response.set_cookie(key="id", value=str(email_result.id), max_age=15695000)
             return response
 
-@app.delete('/profile/{cust_id}', status_code=status.HTTP_204_NO_CONTENT, tags=['Account'])
+@app.delete('/profile/{cust_id}', status_code=status.HTTP_204_NO_CONTENT, 
+            tags=['Account'])
 async def delete_a_cust(cust_id: int):
     statement = select(Customer).where(Customer.id == cust_id)
     result = session.exec(statement).one_or_none()
@@ -192,3 +196,9 @@ async def switch_account(response: Response):
     response = RedirectResponse('/login', status_code=302)
     response.delete_cookie('id')
     return response
+
+
+
+# @app.post('/')
+# async def set_food_cookie(response: Response, id: int = Form(...), count: int = Form(...)):
+#     return RedirectResponse('/id')

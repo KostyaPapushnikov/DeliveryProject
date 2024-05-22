@@ -34,19 +34,37 @@
         <div class="row">
             {%for i in result%}
             <div class="col-3">
+                <!-- <div class="card">
+                    <form method="get">
+                        <a href="/food/{{i.id}}">
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li name="id" class="list-group-item">id: {{i.id}}</li>
+                                    <li name="title" class="list-group-item">title: {{i.title}}</li>
+                                    <li name="price" class="list-group-item">price: {{i.price}}</li>
+                                </ul>
+                            </div>
+                        </a>
+                        <div class="d-grid gap-4 col-2 mx-auto">
+                            <input class="form-control" name="number" type="number" min="1" max="999" value="1">
+                            <input class="btn btn-primary" type="submit" value="Buy">
+                        </div>
+                    </form>
+                </div> -->
                 <div class="card">
-
                     <a href="/food/{{i.id}}">
                         <div class="card-body">
                             <ul class="list-group">
-                                <li class="list-group-item">id: {{i.id}}</li>
-                                <li class="list-group-item">title: {{i.title}}</li>
-                                <li class="list-group-item">price: {{i.price}}</li>
+                                <li name="id" class="list-group-item">id: {{i.id}}</li>
+                                <li name="title" class="list-group-item">title: {{i.title}}</li>
+                                <li name="price" class="list-group-item">price: {{i.price}}</li>
                             </ul>
                         </div>
                     </a>
-                    <div class="d-grid gap-5 col-2 mx-auto">
-                        <a class="btn btn-primary" href="{{ url_for('get_cart_page') }}">Buy</a>
+                    <div class="d-grid gap-4 col-2 mx-auto">
+                        <input class="form-control" name="number" type="number" min="1" max="999" value="1">
+                        <!-- <input class="btn btn-primary" type="submit" value="Buy"> -->
+                        <a class="btn btn-primary" href="/cart">Buy</a>
                     </div>
                     <br>
                 </div>
