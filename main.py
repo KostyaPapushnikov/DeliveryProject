@@ -16,7 +16,7 @@ session = Session(bind=engine)
 
 
 
-
+#1234
 @app.get('/', response_model=Food, tags=['Pages'])
 async def get_all_food(request: Request):
     statement = select(Food)
@@ -93,7 +93,7 @@ async def get_cart_page(request: Request):
 
 
 
-@app.post('/food', response_model=Food, status_code=status.HTTP_201_CREATED)
+@app.post('/food', response_model=Food, status_code=status.HTTP_201_CREATED, tags=['Food'])
 async def create_a_food(food: Annotated[Food, Depends()]):
     new_food = Food(id=food.id, title=food.title, price=food.price)
 
@@ -102,7 +102,7 @@ async def create_a_food(food: Annotated[Food, Depends()]):
     
     return new_food
 
-@app.put('/food/{food_id}', response_model=Food)
+@app.put('/food/{food_id}', response_model=Food, tags=['Food'])
 async def change_a_food(food_id: int, food: Annotated[Food, Depends()]):
     statement = select(Food).where(Food.id == food_id)
     result = session.exec(statement).first()
@@ -114,7 +114,7 @@ async def change_a_food(food_id: int, food: Annotated[Food, Depends()]):
 
     return result
     
-@app.delete('/food/{food_id}', status_code=status.HTTP_204_NO_CONTENT)
+@app.delete('/food/{food_id}', status_code=status.HTTP_204_NO_CONTENT, tags=['Food'])
 async def delete_a_food(food_id: int):
     statement = select(Food).where(Food.id == food_id)
     result = session.exec(statement).one_or_none()
@@ -197,8 +197,3 @@ async def switch_account(response: Response):
     response.delete_cookie('id')
     return response
 
-
-
-# @app.post('/')
-# async def set_food_cookie(response: Response, id: int = Form(...), count: int = Form(...)):
-#     return RedirectResponse('/id')
