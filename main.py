@@ -1,13 +1,16 @@
 from fastapi import FastAPI, Form, status, HTTPException, Depends, Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 from models import *
 from database import engine
 from sqlmodel import Session, select
-from typing import Annotated
+from typing import Annotated, Optional
 
 app = FastAPI(
-    description='Delivery Project'
+    description='Delivery Project',
+    docs_url=None,
+    redoc_url=None
 )
 
 templates = Jinja2Templates('templates')
@@ -16,11 +19,16 @@ session = Session(bind=engine)
 
 
 
-#1234
 @app.get('/', response_model=Food, tags=['Pages'])
 async def get_all_food(request: Request):
     statement = select(Food)
     result = session.exec(statement).all()
+    cookie = request.cookies.get('id')
+    
+    flag = False
+    
+    if cookie != None:
+        flag = True
     
     if result == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -29,9 +37,25 @@ async def get_all_food(request: Request):
         request = request,
         name = 'index.html',
         context = {
-            'result': result
+            'result': result,
+            
         }
     )
+
+def check_admin_cookie(request: Request):
+    admin_id = request.cookies.get("admin_id")
+    if not admin_id:
+        raise HTTPException(status_code=403, detail="Access forbidden")
+
+@app.get("/docs", include_in_schema=False)
+async def custom_swagger_ui_html(request: Request):
+    check_admin_cookie(request)
+    return get_swagger_ui_html(openapi_url="/openapi.json", title="docs")
+
+@app.get("/redoc", include_in_schema=False)
+async def custom_redoc_html(request: Request):
+    check_admin_cookie(request)
+    return get_redoc_html(openapi_url="/openapi.json", title="ReDoc")
 
 @app.get('/food/{food_id}', response_model=Food, tags=['Pages'])
 async def get_a_food(request: Request, food_id: int):
@@ -54,9 +78,12 @@ async def get_a_food(request: Request, food_id: int):
 @app.get('/login', tags=['Pages'])
 async def get_login_page(request: Request):
     cookie = request.cookies.get('id')
+    seller_cookie = request.cookies.get('seller_id')
     
     if cookie != None:
         return RedirectResponse('/profile/'+cookie, status_code=302)
+    elif seller_cookie != None:
+        return RedirectResponse('/profile/'+seller_cookie, status_code=302)
     
     return templates.TemplateResponse('login.html', {'request': request})
 
@@ -64,8 +91,25 @@ async def get_login_page(request: Request):
 async def get_registration_page(request: Request):
     return templates.TemplateResponse('registration.html', {'request': request})
 
+@app.get('/create_food', tags=['Pages'])
+async def get_create_food_page(request: Request):
+        
+    cookie = request.cookies.get('seller_id')
+    
+    if cookie == None:
+        return RedirectResponse('/login', status_code=302)
+    
+    return templates.TemplateResponse('create_food.html', {'request': request})
+
 @app.get('/profile/{cust_id}', response_model=Customer, tags=['Pages'])
 async def get_profile(request: Request, cust_id: int):
+    cookie = request.cookies.get('seller_id')
+    
+    flag = False
+    
+    if cookie != None:
+        flag = True
+        
     statement = select(Customer).where(Customer.id == cust_id)
     result = session.exec(statement).first()
     
@@ -82,7 +126,8 @@ async def get_profile(request: Request, cust_id: int):
             'second_name': result.second_name,
             'phone': result.phone,
             'email': result.email,
-            'address': result.address
+            'address': result.address,
+            'flag': flag
         }
     )
 
@@ -93,14 +138,17 @@ async def get_cart_page(request: Request):
 
 
 
-@app.post('/food', response_model=Food, status_code=status.HTTP_201_CREATED, tags=['Food'])
-async def create_a_food(food: Annotated[Food, Depends()]):
-    new_food = Food(id=food.id, title=food.title, price=food.price)
+@app.post('/create_food', response_model=Food, response_class=RedirectResponse,
+          status_code=status.HTTP_201_CREATED, tags=['Food'])
+async def create_a_food(title: str = Form(...), 
+                        price: int = Form(...)) -> RedirectResponse:
+    new_food = Food(title=title, price=price)
 
     session.add(new_food)
     session.commit()
+    session.rollback()
     
-    return new_food
+    return RedirectResponse('/', status_code=302)
 
 @app.put('/food/{food_id}', response_model=Food, tags=['Food'])
 async def change_a_food(food_id: int, food: Annotated[Food, Depends()]):
@@ -139,22 +187,36 @@ async def create_a_customer(first_name: str = Form(...),
                             address: str = Form(...),
                             phone: int = Form(...),
                             password: str = Form(...),
-                            remember: Optional[bool] = Form(default=False)) -> RedirectResponse:
+                            remember: Optional[bool] = Form(default=False),
+                            seller: Optional[bool] = Form(default=False),
+                            admin: Optional[bool] = Form(default=False)) -> RedirectResponse:
     
     statement = select(Customer).where(Customer.email == email or Customer.phone == phone)
     result = session.exec(statement).one_or_none()
     
     new_cust = Customer(first_name=first_name, second_name=second_name,
-                        phone=phone, email=email, password=password, address=address)
+                        phone=phone, email=email, password=password,
+                        address=address, seller=seller, admin=admin)
     
     if result == None:
-        session.add(new_cust)
-        session.commit()
+        if seller == None:
+            session.add(new_cust)
+            session.commit()
+            
+            response = RedirectResponse('/profile/'+str(new_cust.id), status_code=302)
+            if remember == True:
+                response.set_cookie(key="id", value=str(new_cust.id), max_age=15695000)
+            return response
         
-        response = RedirectResponse('/profile/'+str(new_cust.id), status_code=302)
-        if remember == True:
-            response.set_cookie(key="id", value=str(new_cust.id), max_age=15695000)
-        return response
+        else:
+            session.add(new_cust)
+            session.commit()
+                
+            response = RedirectResponse('/profile/'+str(new_cust.id), status_code=302)
+            if remember == True:
+                    response.set_cookie(key="seller_id", value=str(new_cust.id), max_age=15695000)
+            return response
+        
 
     return RedirectResponse('/registration', status_code=302)
 
@@ -173,6 +235,8 @@ async def get_cust(email_login: str = Form(...),
         if email_result.id == password_result.id:
             response = RedirectResponse('/profile/'+str(email_result.id), status_code=302)
             if remember == True:
+                if email_result.admin == True:
+                    response.set_cookie(key="admin_id", value=str(email_result.id), max_age=15695000)
                 response.set_cookie(key="id", value=str(email_result.id), max_age=15695000)
             return response
 
@@ -188,6 +252,7 @@ async def delete_a_cust(cust_id: int):
     
     session.delete(result)
     session.commit()
+    session.rollback()
 
     return result
 
