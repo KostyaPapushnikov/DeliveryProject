@@ -27,7 +27,9 @@
             </div>
             <div style="width: 200px; display: flex; justify-content: space-around;" class="right">
                 <a href="{{ url_for('get_cart_page') }}">Cart</a>
+                {% if flag == True %}
                 <a href="{{ url_for('get_registration_page') }}">Sing Up</a>
+                {% endif %}
                 <a href="{{ url_for('get_login_page') }}">Profile</a>
             </div>
         </div>
