@@ -7,6 +7,7 @@ from database import engine
 from sqlmodel import Session, select
 from typing import Annotated, Optional
 
+
 app = FastAPI(
     description='Delivery Project',
     docs_url=None,
