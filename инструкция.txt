@@ -1,0 +1,11 @@
+1)Клонируйте репрезиторий
+2)Из файла requirements.txt установите все библиотеки, а также node.js
+и такие бибилиотеки как emoji-picker-react, react-router-dom, socket.io-client, cors, express, nodemon, socket.io, bootstrap.
+3)запустить с помощью терминала: uvicorn main:app --reload
+4)открыть еще два терминала и на первом:
+cd server
+npm run dev
+На втором терминале:
+cd client
+npm start 
+Если будут ошибки, нужно будет установить недостающие элементы
